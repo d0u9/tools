@@ -1,0 +1,19 @@
+#!/bin/bash
+# vim: ft=sh
+
+user=trident
+server=tri-server
+src=/Volumes/U/Photo
+dst=/media/backup_all/VERY_IMPORTANT/
+
+rsync_min_version=3.1.1
+
+rsync_version=$(rsync --version | awk '$1=="rsync" && $2=="version" {print $3}')
+c=$(printf "$rsync_version\n$rsync_min_version" | sort -V | head -n1)
+
+if [ "$c" != "$rsync_min_version" ]; then
+    echo "Please update your rsync"
+    exit 1
+fi
+
+rsync -avP --delete --info=progress2 "$src" "$user"@"$server":"$dst"
